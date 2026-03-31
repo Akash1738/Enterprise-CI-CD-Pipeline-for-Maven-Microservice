@@ -6,9 +6,9 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = 'akash1738/maven-project'
-        IMAGE_TAG = 'latest'
-        CONTAINER_NAME = 'maven-app'
+        IMAGE_NAME = 'akash'
+        IMAGE_TAG = '01'
+        CONTAINER_NAME = 'akash-app'
     }
 
     stages {
@@ -35,24 +35,6 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
-            }
-        }
-
-        stage('Login to DockerHub') {
-            steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'docker-creds',
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_PASS'
-                )]) {
-                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-                }
-            }
-        }
-
-        stage('Push Docker Image') {
-            steps {
-                sh 'docker push $IMAGE_NAME:$IMAGE_TAG'
             }
         }
 
