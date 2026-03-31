@@ -2,19 +2,14 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven'
-        jdk 'JDK'
-    }
-
-    environment {
-        DOCKER_IMAGE = 'your-dockerhub/devops-project'
+        maven 'Maven'   // Must match Jenkins config
     }
 
     stages {
 
         stage('Checkout') {
             steps {
-                git 'https://github.com/your-repo.git'
+                git 'https://github.com/your-username/your-repo.git'
             }
         }
 
@@ -30,30 +25,32 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                sh 'mvn sonar:sonar'
-            }
-        }
-
         stage('Docker Build') {
             steps {
-                sh 'docker build -t $DOCKER_IMAGE .'
+                sh 'docker build -t your-dockerhub-username/maven-app .'
             }
         }
 
-        stage('Push to DockerHub') {
+        stage('Docker Push') {
             steps {
-                withCredentials([string(credentialsId: 'docker-pass', variable: 'PASS')]) {
-                    sh 'docker login -u your-user -p $PASS'
-                    sh 'docker push $DOCKER_IMAGE'
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'USER',
+                    passwordVariable: 'PASS'
+                )]) {
+                    sh 'echo $PASS | docker login -u $USER --password-stdin'
+                    sh 'docker push your-dockerhub-username/maven-app'
                 }
             }
         }
 
-        stage('Deploy to Kubernetes') {
+        stage('Deploy') {
             steps {
-                sh 'kubectl apply -f k8s/deployment.yaml'
+                sh '''
+                docker stop app || true
+                docker rm app || true
+                docker run -d -p 8081:8080 --name app your-dockerhub-username/maven-app
+                '''
             }
         }
     }
