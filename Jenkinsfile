@@ -22,13 +22,13 @@ pipeline {
 
         stage('Build Application') {
             steps {
-                sh 'mvn clean package'
+                sh 'mvn clean package -DskipTests -B'
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'mvn test'
+                sh 'mvn test -B'
             }
         }
 
