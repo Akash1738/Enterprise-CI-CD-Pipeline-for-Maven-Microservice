@@ -1,9 +1,7 @@
-import org.junit.Test;
-import static org.junit.Assert.*;
+package com.example;
 
-public class AppTest {
-    @Test
-    public void shouldAnswerWithTrue() {
-        assertTrue(true);
+public class App {
+    public static void main(String[] args) {
+        System.out.println("Hello World!");
     }
 }
