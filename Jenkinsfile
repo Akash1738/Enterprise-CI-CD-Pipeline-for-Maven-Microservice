@@ -30,7 +30,7 @@ pipeline {
 
         stage('Test Docker') {
             steps {
-                sh 'docker ps'
+                sh 'sudo docker ps'
             }
         }
 
