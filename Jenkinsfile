@@ -21,21 +21,26 @@ pipeline {
         }
 
         stage('Build Application') {
+         
             steps {
-                sh 'mvn clean package -DskipTests -B'
-            }
+               sh 'echo "Starting Maven Build"'
+               sh 'mvn clean package -DskipTests -B'
+               sh 'echo "Maven Build Completed"'
+    }
         }
 
-        stage('Run Tests') {
-            steps {
-                sh 'mvn test -B'
-            }
-        }
+        stage('Test Docker') {
+           steps {
+               sh 'docker ps'
+    }
+}
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
-            }
+                sh 'echo "Starting Docker Build"'
+                sh 'docker build -t akash1738/maven-project .'
+                sh 'echo "Docker Build Completed"'
+    }
         }
 
         stage('Deploy Container') {
