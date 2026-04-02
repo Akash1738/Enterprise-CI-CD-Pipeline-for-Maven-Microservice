@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = 'akash'
+        IMAGE_NAME = 'akash1738/maven-project'
         IMAGE_TAG = '01'
         CONTAINER_NAME = 'akash-app'
     }
@@ -21,26 +21,31 @@ pipeline {
         }
 
         stage('Build Application') {
-         
             steps {
-               sh 'echo "Starting Maven Build"'
-               sh 'mvn clean package -DskipTests -B'
-               sh 'echo "Maven Build Completed"'
-    }
+                sh 'echo "Starting Maven Build"'
+                sh 'mvn clean package -DskipTests -B'
+                sh 'echo "Maven Build Completed"'
+            }
         }
 
         stage('Test Docker') {
-           steps {
-               sh 'docker ps'
-    }
-}
+            steps {
+                sh 'docker ps'
+            }
+        }
 
         stage('Build Docker Image') {
             steps {
                 sh 'echo "Starting Docker Build"'
-                sh 'docker build -t akash1738/maven-project .'
+                sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
                 sh 'echo "Docker Build Completed"'
-    }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                sh 'docker push $IMAGE_NAME:$IMAGE_TAG'
+            }
         }
 
         stage('Deploy Container') {
